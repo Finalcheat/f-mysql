@@ -134,3 +134,7 @@ class mysql_obj(object):
             '$in'  : 'in',
             '$nin' : 'not in',
         }
+        try:
+            return op_dict[key];
+        except:
+            raise
