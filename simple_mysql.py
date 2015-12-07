@@ -42,10 +42,19 @@ class mysql_obj(object):
         return result
 
 
-    def query(self, table_name, query_dict = {}, fields = ['*']):
+    def query(self, table_name, query_dict = {}, fields = ['*'], sort_list = [], group_by = '', page = 0, page_num = 50):
         query_sql, args = self.__get_sql_by_item_dict(query_dict)
         fields_sql = ', '.join(fields)
-        sql = "select {fields} from {table_name} where 1 = 1 {query_sql}".format(fields = fields_sql, table_name = table_name, query_sql = query_sql)
+        sort_sql = ""
+        if sort_list:
+            sort_sql = "order by "
+            sort_sql += ", ".join(["`{sort_field}` {sort_type}".format(sort_field = r[0], sort_type = "desc" if r[1] == -1 else "asc") for r in sort_list])
+        limit_sql = ""
+        if page != 0:
+            start = (int(page) - 1) * page_num
+            limit_sql = "limit {start}, {limit_num}".format(start = start, limit_num = page_num)
+        sql = "select {fields} from {table_name} where 1 = 1 {query_sql} {group_by} {sort_sql} {limit_sql}".format(fields = fields_sql,
+                table_name = table_name, query_sql = query_sql, sort_sql = sort_sql, group_by = group_by, limit_sql = limit_sql)
         print "sql:{}".format(sql)
         print "args:{}".format(args)
         return self.exec_sql(sql, args = args)
@@ -142,3 +151,4 @@ class mysql_obj(object):
             return op_dict[key];
         except:
             raise
+
