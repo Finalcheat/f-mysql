@@ -88,6 +88,22 @@ class mysql_obj(object):
         return insert_id
 
 
+    def replace(self, table_name, item_dict = {}):
+        args = item_dict.values()
+        plac = ', '.join(['`{}`'.format(field) for field in item_dict.keys() ])
+        values = ','.join(['%s'] * len(item_dict))
+        print values
+        sql = "replace into `{table_name}` ({fields}) values ({values})".format(table_name = table_name, fields = plac, values = values)
+        print "sql:{}".format(sql)
+        print "args:{}".format(args)
+        conn, cursor = self._get_cursor()
+        cursor.execute(sql, args = args)
+        insert_id = conn.insert_id()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return insert_id
+
     def remove(self, table_name, item_dict = {}):
         query_sql, args = self.__get_sql_by_item_dict(item_dict)
         sql = "delete from `{table_name}` where 1 = 1 {query_sql}".format(table_name = table_name, query_sql = query_sql)
