@@ -15,13 +15,17 @@ class mysql_obj(object):
         self._port = port
         self._db_name = db_name
         self._charset = charset
+        self._conn = None
 
 
     def _get_cursor(self, dict_cursor = True):
         try:
-            conn = MySQLdb.connect(self._host, self._user, self._password, self._db_name, self._port, charset = self._charset)
-            cursor = conn.cursor(MySQLdb.cursors.DictCursor) if dict_cursor else conn.cursor()
-            return conn, cursor
+            if not self._conn:
+                cursor = self._conn.cursor(MySQLdb.cursors.DictCursor) if dict_cursor else self._conn.cursor()
+            else:
+                self._conn = MySQLdb.connect(self._host, self._user, self._password, self._db_name, self._port, charset = self._charset)
+                cursor = self._conn.cursor(MySQLdb.cursors.DictCursor) if dict_cursor else self._conn.cursor()
+            return self._conn, cursor
         except Exception, e:
             raise e
 
