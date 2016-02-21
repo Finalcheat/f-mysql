@@ -20,7 +20,7 @@ class mysql_obj(object):
 
     def _get_cursor(self, dict_cursor = True):
         try:
-            if not self._conn:
+            if self._conn:
                 cursor = self._conn.cursor(MySQLdb.cursors.DictCursor) if dict_cursor else self._conn.cursor()
             else:
                 self._conn = MySQLdb.connect(self._host, self._user, self._password, self._db_name, self._port, charset = self._charset)
