@@ -17,6 +17,11 @@ class mysql_obj(object):
         self._charset = charset
         self._conn = None
 
+    def close_conn(self):
+        if self._conn:
+            self._conn.close()
+            self._conn = None
+
 
     def _get_cursor(self, dict_cursor = True):
         try:
@@ -38,7 +43,6 @@ class mysql_obj(object):
         conn.commit()
         result = cursor.fetchall()
         cursor.close()
-        conn.close()
         return result
 
 
@@ -71,7 +75,6 @@ class mysql_obj(object):
         conn.commit()
         result = cursor.fetchone()
         cursor.close()
-        conn.close()
         return result
 
 
@@ -88,7 +91,6 @@ class mysql_obj(object):
         insert_id = conn.insert_id()
         conn.commit()
         cursor.close()
-        conn.close()
         return insert_id
 
 
@@ -105,7 +107,6 @@ class mysql_obj(object):
         insert_id = conn.insert_id()
         conn.commit()
         cursor.close()
-        conn.close()
         return insert_id
 
     def remove(self, table_name, item_dict = {}):
@@ -117,7 +118,6 @@ class mysql_obj(object):
         cursor.execute(sql, args = args)
         conn.commit()
         cursor.close()
-        conn.close()
 
 
     def update(self, table_name, item_dict = {}, update_dict = {}):
@@ -131,7 +131,6 @@ class mysql_obj(object):
         cursor.execute(sql, args = args)
         conn.commit()
         cursor.close()
-        conn.close()
 
 
     def __get_sql_by_item_dict(self, item_dict):
